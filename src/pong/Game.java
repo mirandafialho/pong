@@ -113,10 +113,13 @@ public class Game extends javax.swing.JFrame {
         PanelBall = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Pong");
         setBackground(new java.awt.Color(0, 0, 0));
         setForeground(java.awt.Color.black);
+        setMaximumSize(new java.awt.Dimension(800, 400));
         setName("FrmGame"); // NOI18N
         setPreferredSize(new java.awt.Dimension(800, 400));
+        setResizable(false);
         setSize(new java.awt.Dimension(800, 400));
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -199,6 +202,7 @@ public class Game extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -208,14 +212,14 @@ public class Game extends javax.swing.JFrame {
      * @author Yuri Miranda Fialho
      */
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_UP) {
+        if (evt.getKeyCode() == KeyEvent.VK_UP && PanelPlayer1.getY() != 0) {
             //Alterar a posição na minha tela e enviar a posição para ser alterada na tela do adversário.
             
             //Alterar na minha tela.
             PanelPlayer1.setLocation(PanelPlayer1.getX(), PanelPlayer1.getY() - 5);
             //Enviar a posição ao adversário.
             movingUp(PanelPlayer1.getY() - 5);
-        } else if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
+        } else if (evt.getKeyCode() == KeyEvent.VK_DOWN && PanelPlayer1.getY() != 295) {
             //Alterar na minha tela.
             PanelPlayer1.setLocation(PanelPlayer1.getX(), PanelPlayer1.getY() + 5);
             //Enviar a posição ao adversário.
