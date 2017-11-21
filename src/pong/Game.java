@@ -5,24 +5,36 @@
  */
 package pong;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  * Class of the game interface.
  * 
  * @author Yuri Miranda Fialho
  */
-public class Game extends javax.swing.JFrame {
+public class Game extends javax.swing.JFrame implements ActionListener, KeyListener {
     /**
      * Variáveis com dados de conexão.
      */
     int localPort = 0;
     int remotePort = 0;
+    
+    int gameWidth = 800;
+    int gameHeight = 400;
+    int xBall = this.gameWidth/2;
+    int yBall = this.gameHeight/2;
+    int xMovement = 1; 
+    int yMovement = 1;
     String remoteIP = "";
 
     /**
@@ -30,11 +42,14 @@ public class Game extends javax.swing.JFrame {
      */
     public Game() {
         initComponents();
-        
+        getContentPane().setBackground(Color.BLACK);
         // Caixas de diálogo para capturar os dados.
         localPort = Integer.parseInt(JOptionPane.showInputDialog("Digite o número da sua porta:"));
         remoteIP = JOptionPane.showInputDialog("Digite o endereço IP do seu adversário:");
         remotePort = Integer.parseInt(JOptionPane.showInputDialog("Digite o número da porta do seu adversário:"));
+        
+        Timer timer = new Timer(5, this);
+        timer.start();
         
         Thread thread = new Thread() {
             @Override
@@ -43,6 +58,7 @@ public class Game extends javax.swing.JFrame {
             }
         };
         thread.start();
+        addKeyListener(this);
     }
 
     /**
@@ -118,14 +134,8 @@ public class Game extends javax.swing.JFrame {
         setForeground(java.awt.Color.black);
         setMaximumSize(new java.awt.Dimension(800, 400));
         setName("FrmGame"); // NOI18N
-        setPreferredSize(new java.awt.Dimension(800, 400));
         setResizable(false);
         setSize(new java.awt.Dimension(800, 400));
-        addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                formKeyPressed(evt);
-            }
-        });
 
         PanelPlayer1.setBackground(new java.awt.Color(255, 255, 255));
         PanelPlayer1.setForeground(new java.awt.Color(255, 255, 255));
@@ -205,28 +215,68 @@ public class Game extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * Função privada que verifica o uso dos botões para mover os jogadores.
-     * 
-     * @param evt 
-     * @author Yuri Miranda Fialho
-     */
-    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_UP && PanelPlayer1.getY() != 0) {
+   
+    @Override
+    public void keyReleased(KeyEvent e) {
+        //
+    }
+    
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_UP && PanelPlayer1.getY() != 0) {
             //Alterar a posição na minha tela e enviar a posição para ser alterada na tela do adversário.
             
             //Alterar na minha tela.
             PanelPlayer1.setLocation(PanelPlayer1.getX(), PanelPlayer1.getY() - 5);
+            System.out.println();
             //Enviar a posição ao adversário.
             movingUp(PanelPlayer1.getY() - 5);
-        } else if (evt.getKeyCode() == KeyEvent.VK_DOWN && PanelPlayer1.getY() != 295) {
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN && PanelPlayer1.getY() != 295) {
             //Alterar na minha tela.
             PanelPlayer1.setLocation(PanelPlayer1.getX(), PanelPlayer1.getY() + 5);
             //Enviar a posição ao adversário.
             movingDown(PanelPlayer1.getY() + 5);
         }
-    }//GEN-LAST:event_formKeyPressed
-
+    }
+    
+    @Override
+    public void repaint() {
+        super.repaint();
+    }
+    
+    @Override
+    public void keyTyped(KeyEvent e) {}
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        update();
+        repaint();
+    }
+    
+    private void update() {
+        this.xBall += this.xMovement;
+        this.yBall += this.yMovement;
+        
+        PanelBall.setLocation(this.xBall, this.yBall);
+        if (PanelBall.getX() < 0) {
+            JOptionPane.showMessageDialog(this, "Player 2 venceu!");
+            PanelBall.setLocation(this.gameWidth/2, this.gameHeight/2);
+            this.xMovement = -this.xMovement;
+        } else if (PanelBall.getX() > this.gameWidth) {
+            JOptionPane.showMessageDialog(this, "Player 1 venceu!");
+            PanelBall.setLocation(this.gameWidth/2, this.gameHeight/2);
+            this.xMovement = -this.xMovement;
+        } else if (PanelBall.getY() < 0 || PanelBall.getY() > this.gameHeight) {
+            this.yMovement = -this.yMovement;
+        }
+        checkCollision();
+    }
+    
+    public void checkCollision() {       
+        if (PanelPlayer1.getBounds().intersects(PanelBall.getBounds()) || PanelPlayer2.getBounds().intersects(PanelBall.getBounds())) {
+            this.xMovement = -this.xMovement;
+        }
+    }
     /**
      * @param args the command line arguments
      */
