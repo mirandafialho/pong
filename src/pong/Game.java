@@ -77,6 +77,8 @@ public class Game extends javax.swing.JFrame implements ActionListener, KeyListe
                 DataOutputStream output = new DataOutputStream(s.getOutputStream());
                 output.writeUTF("");
                 PanelPlayer1.setLocation(PanelPlayer1.getX(), Integer.parseInt(yPosition));
+                PanelPlayer2.setLocation(PanelPlayer2.getX(), Integer.parseInt(yPosition));
+                PanelBall.setLocation(PanelBall.getX(), PanelBall.getY());
             }
         } catch (Exception e) {}
     }
@@ -236,6 +238,19 @@ public class Game extends javax.swing.JFrame implements ActionListener, KeyListe
             PanelPlayer1.setLocation(PanelPlayer1.getX(), PanelPlayer1.getY() + 5);
             //Enviar a posição ao adversário.
             movingDown(PanelPlayer1.getY() + 5);
+        } else if (e.getKeyCode() == KeyEvent.VK_W && PanelPlayer2.getY() != 0) {
+            //Alterar a posição na minha tela e enviar a posição para ser alterada na tela do adversário.
+            
+            //Alterar na minha tela.
+            PanelPlayer2.setLocation(PanelPlayer2.getX(), PanelPlayer2.getY() - 5);
+            System.out.println();
+            //Enviar a posição ao adversário.
+            movingUp(PanelPlayer2.getY() - 5);
+        } else if (e.getKeyCode() == KeyEvent.VK_S && PanelPlayer2.getY() != 295) {
+            //Alterar na minha tela.
+            PanelPlayer2.setLocation(PanelPlayer2.getX(), PanelPlayer2.getY() + 5);
+            //Enviar a posição ao adversário.
+            movingDown(PanelPlayer2.getY() + 5);
         }
     }
     
