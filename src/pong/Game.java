@@ -28,13 +28,14 @@ public class Game extends javax.swing.JFrame implements ActionListener, KeyListe
      */
     int localPort = 0;
     int remotePort = 0;
+    int player = 0;
     
     int gameWidth = 800;
     int gameHeight = 400;
     int xBall = this.gameWidth/2;
     int yBall = this.gameHeight/2;
-    int xMovement = 1; 
-    int yMovement = 1;
+    int xMovement = 3; 
+    int yMovement = 3;
     String remoteIP = "";
 
     /**
@@ -47,6 +48,7 @@ public class Game extends javax.swing.JFrame implements ActionListener, KeyListe
         localPort = Integer.parseInt(JOptionPane.showInputDialog("Digite o número da sua porta:"));
         remoteIP = JOptionPane.showInputDialog("Digite o endereço IP do seu adversário:");
         remotePort = Integer.parseInt(JOptionPane.showInputDialog("Digite o número da porta do seu adversário:"));
+        player = Integer.parseInt(JOptionPane.showInputDialog("Você quer ser o Player 1 ou Player 2? Digite o número."));
         
         Timer timer = new Timer(5, this);
         timer.start();
@@ -76,8 +78,16 @@ public class Game extends javax.swing.JFrame implements ActionListener, KeyListe
                 String yPosition = input.readUTF();
                 DataOutputStream output = new DataOutputStream(s.getOutputStream());
                 output.writeUTF("");
-                PanelPlayer1.setLocation(PanelPlayer1.getX(), Integer.parseInt(yPosition));
-                PanelPlayer2.setLocation(PanelPlayer2.getX(), Integer.parseInt(yPosition));
+                switch (player) {
+                    case 1:
+                        PanelPlayer2.setLocation(PanelPlayer2.getX(), Integer.parseInt(yPosition));
+                        break;
+                    case 2:
+                        PanelPlayer1.setLocation(PanelPlayer1.getX(), Integer.parseInt(yPosition));
+                        break;
+                    default:
+                        break;
+                }
                 PanelBall.setLocation(PanelBall.getX(), PanelBall.getY());
             }
         } catch (Exception e) {}
@@ -225,32 +235,41 @@ public class Game extends javax.swing.JFrame implements ActionListener, KeyListe
     
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_UP && PanelPlayer1.getY() != 0) {
-            //Alterar a posição na minha tela e enviar a posição para ser alterada na tela do adversário.
-            
-            //Alterar na minha tela.
-            PanelPlayer1.setLocation(PanelPlayer1.getX(), PanelPlayer1.getY() - 5);
-            System.out.println();
-            //Enviar a posição ao adversário.
-            movingUp(PanelPlayer1.getY() - 5);
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN && PanelPlayer1.getY() != 295) {
-            //Alterar na minha tela.
-            PanelPlayer1.setLocation(PanelPlayer1.getX(), PanelPlayer1.getY() + 5);
-            //Enviar a posição ao adversário.
-            movingDown(PanelPlayer1.getY() + 5);
-        } else if (e.getKeyCode() == KeyEvent.VK_W && PanelPlayer2.getY() != 0) {
-            //Alterar a posição na minha tela e enviar a posição para ser alterada na tela do adversário.
-            
-            //Alterar na minha tela.
-            PanelPlayer2.setLocation(PanelPlayer2.getX(), PanelPlayer2.getY() - 5);
-            System.out.println();
-            //Enviar a posição ao adversário.
-            movingUp(PanelPlayer2.getY() - 5);
-        } else if (e.getKeyCode() == KeyEvent.VK_S && PanelPlayer2.getY() != 295) {
-            //Alterar na minha tela.
-            PanelPlayer2.setLocation(PanelPlayer2.getX(), PanelPlayer2.getY() + 5);
-            //Enviar a posição ao adversário.
-            movingDown(PanelPlayer2.getY() + 5);
+        switch (player) {
+            case 1: {
+                if (e.getKeyCode() == KeyEvent.VK_UP && PanelPlayer1.getY() != 0) {
+                    //Alterar a posição na minha tela e enviar a posição para ser alterada na tela do adversário.
+
+                    //Alterar na minha tela.
+                    PanelPlayer1.setLocation(PanelPlayer1.getX(), PanelPlayer1.getY() - 5);
+                    System.out.println();
+                    //Enviar a posição ao adversário.
+                    movingUp(PanelPlayer1.getY() - 5);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN && PanelPlayer1.getY() != 295) {
+                    //Alterar na minha tela.
+                    PanelPlayer1.setLocation(PanelPlayer1.getX(), PanelPlayer1.getY() + 5);
+                    //Enviar a posição ao adversário.
+                    movingDown(PanelPlayer1.getY() + 5);
+                }
+            }
+            case 2: {
+                if (e.getKeyCode() == KeyEvent.VK_UP && PanelPlayer2.getY() != 0) {
+                    //Alterar a posição na minha tela e enviar a posição para ser alterada na tela do adversário.
+
+                    //Alterar na minha tela.
+                    PanelPlayer2.setLocation(PanelPlayer2.getX(), PanelPlayer2.getY() - 5);
+                    System.out.println();
+                    //Enviar a posição ao adversário.
+                    movingUp(PanelPlayer2.getY() - 5);
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN && PanelPlayer2.getY() != 295) {
+                    //Alterar na minha tela.
+                    PanelPlayer2.setLocation(PanelPlayer2.getX(), PanelPlayer2.getY() + 5);
+                    //Enviar a posição ao adversário.
+                    movingDown(PanelPlayer2.getY() + 5);
+                }
+            }
+            default:
+                break;
         }
     }
     
